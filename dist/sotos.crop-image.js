@@ -551,6 +551,9 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
 
                  iMouseX = Math.floor(e.pageX - element.prop('offsetLeft'));
                  iMouseY = Math.floor(e.pageY -  element.prop('offsetTop'));
+
+
+
                 cropCtrl.theSelection.rotateCenter.isrotate=false;
                 // in case of drag of whole selector
                 if (cropCtrl.theSelection.bDragAll) {
@@ -608,7 +611,6 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 // hovering ratio
                 if (iMouseX >  40 && iMouseX <  70 &&
                     iMouseY >  50 && iMouseY <  60) {
-
                     cropCtrl.theSelection.ratioHover= true;
                     cropCtrl.theSelection.ratioSize = 10;
                 }
@@ -624,19 +626,22 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[1]) {
+
                     iFX = cropCtrl.theSelection.x;
                     iFY = iMouseY - cropCtrl.theSelection.py;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[2]) {
+
                     iFX = cropCtrl.theSelection.x;
                     iFY = cropCtrl.theSelection.y;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[3]) {
-                    iFX = iMouseX - cropCtrl.theSelection.x;
+
+                    iFX = iMouseX - cropCtrl.theSelection.px;
                     iFY = cropCtrl.theSelection.y;
                     iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
@@ -655,7 +660,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                         cropCtrl.theSelection.rotateCenter.angleRotate=- 1;
                     }
 
-                    console.log(cropCtrl.theSelection.rotateCenter.mouseY + " "+iMouseY + " "+cropCtrl.theSelection.rotateCenter.angle);
+                   // console.log(cropCtrl.theSelection.rotateCenter.mouseY + " "+iMouseY + " "+cropCtrl.theSelection.rotateCenter.angle);
 
                 }
 
@@ -665,7 +670,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                     cropCtrl.theSelection.x = iFX;
                     cropCtrl.theSelection.y = iFY;
                 }
-
+                //console.log(iMouseX+"  my "+iMouseY+"   x "+ cropCtrl.theSelection.x+" y "+ cropCtrl.theSelection.y);
                 cropCtrl.drawScene();
 
             };

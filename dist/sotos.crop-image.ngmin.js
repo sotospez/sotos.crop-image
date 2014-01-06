@@ -410,7 +410,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
             iFH = iMouseY - cropCtrl.theSelection.py - iFY;
           }
           if (cropCtrl.theSelection.bDrag[3]) {
-            iFX = iMouseX - cropCtrl.theSelection.x;
+            iFX = iMouseX - cropCtrl.theSelection.px;
             iFY = cropCtrl.theSelection.y;
             iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
             iFH = iMouseY - cropCtrl.theSelection.py - iFY;
@@ -426,7 +426,6 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
               cropCtrl.theSelection.rotateCenter.angle = cropCtrl.theSelection.rotateCenter.angle - 0.005;
               cropCtrl.theSelection.rotateCenter.angleRotate = -1;
             }
-            console.log(cropCtrl.theSelection.rotateCenter.mouseY + ' ' + iMouseY + ' ' + cropCtrl.theSelection.rotateCenter.angle);
           }
           if (iFW > cropCtrl.theSelection.csizeh * 2 && iFH > cropCtrl.theSelection.csizeh * 2) {
             cropCtrl.theSelection.w = iFW;
