@@ -13,7 +13,7 @@ crop images, put watermark and save directive in angular
 ```
  <html>
   <body>
-    <image-crop> image-out="imageOut"  crop-options="options" ng-transclude>
+    <image-crop image-out="imageOut"  crop-options="options" ng-transclude>
        <edit-crop></edit-crop>
        <view-crop></view-crop>
     </image-crop>
