@@ -97,4 +97,7 @@ in controller required
          }]);
 ```
 
+thanks for this tutorial http://www.script-tutorials.com/html5-image-crop-tool/
+
 sotos.crop-image
+
