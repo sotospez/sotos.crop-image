@@ -93,7 +93,6 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           };
           SelectionCrop.prototype.drawRatio = function () {
             if ($scope.cropOptions.viewShowFixedBtn) {
-              editCanvasCtx.beginPath();
               editCanvasCtx.lineWidth = 1;
               editCanvasCtx.strokeStyle = '#eee';
               editCanvasCtx.font = '20px Arial';
@@ -125,25 +124,26 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
               srcCanvasCtx.drawImage(watermarkImage, this.x * ratio_width, this.y * ratio_width, this.w * ratio_width, this.h * ratio_width);
               viewCanvasCtx.drawImage(srcCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
             }
-            editCanvasCtx.beginPath();
-            editCanvasCtx.fillStyle = '#fff';
+            editCanvasCtx.fillStyle = 'rgba(119,206, 238, 0.9)';
             editCanvasCtx.fillRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
             editCanvasCtx.fillRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
+            editCanvasCtx.lineWidth = 1;
+            editCanvasCtx.strokeRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
+            editCanvasCtx.strokeRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
           };
           SelectionCrop.prototype.drawWaterMarkText = function () {
-            editCanvasCtx.beginPath();
             editCanvasCtx.font = this.h + 'px ' + $scope.cropOptions.watermarkTextFont;
             editCanvasCtx.fillStyle = $scope.cropOptions.watermarkTextFillColor;
             editCanvasCtx.fillText($scope.cropOptions.watermarkText, this.x + this.watermarkTextSpace, this.y + this.h - this.h / 4, this.w - this.watermarkTextSpace - this.watermarkTextSpace);
-            editCanvasCtx.beginPath();
             editCanvasCtx.strokeStyle = '#000';
             editCanvasCtx.lineWidth = 2;
             editCanvasCtx.strokeRect(this.x, this.y, this.w, this.h);
             if (this.w > 0 && this.h > 0) {
               viewCanvasCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-              srcCanvasCtx.beginPath();
               srcCanvasCtx.lineWidth = $scope.cropOptions.watermarkTextStrokeLineWidth;
               srcCanvasCtx.strokeStyle = $scope.cropOptions.watermarkTextFillColor;
               var fontSize = this.h * ratio_width;
@@ -152,42 +152,45 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
               srcCanvasCtx.fillText($scope.cropOptions.watermarkText, (this.x + this.watermarkTextSpace) * ratio_width, (this.y + this.h - this.h / 4) * ratio_width, (this.w - this.watermarkTextSpace - this.watermarkTextSpace) * ratio_width);
               viewCanvasCtx.drawImage(srcCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
             }
-            editCanvasCtx.beginPath();
-            editCanvasCtx.fillStyle = '#fff';
+            editCanvasCtx.fillStyle = 'rgba(119,206, 238, 0.9)';
             editCanvasCtx.fillRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
             editCanvasCtx.fillRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
+            editCanvasCtx.lineWidth = 1;
+            editCanvasCtx.strokeRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
+            editCanvasCtx.strokeRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
           };
           SelectionCrop.prototype.drawRotate = function () {
-            this.rotateCenter.r = this.w > this.h ? this.w : this.h;
-            this.rotateCenter.r = this.rotateCenter.r / Math.PI;
-            this.rotateCenter.x = this.x + this.w / 2;
-            this.rotateCenter.sx = this.rotateCenter.x + this.rotateCenter.r * Math.cos(this.rotateCenter.angle);
-            this.rotateCenter.y = this.y + this.h / 2;
-            this.rotateCenter.sy = this.rotateCenter.y + this.rotateCenter.r * Math.sin(this.rotateCenter.angle);
             if ($scope.cropOptions.viewShowRotateBtn) {
+              this.rotateCenter.r = this.w > this.h ? this.w : this.h;
+              this.rotateCenter.r = Math.floor(this.rotateCenter.r / Math.PI);
+              this.rotateCenter.x = Math.floor(this.x + this.w / 2);
+              this.rotateCenter.sx = Math.floor(this.rotateCenter.x + this.rotateCenter.r * Math.cos(this.rotateCenter.angleRotate));
+              this.rotateCenter.y = Math.floor(this.y + this.h / 2);
+              this.rotateCenter.sy = Math.floor(this.rotateCenter.y + this.rotateCenter.r * Math.sin(this.rotateCenter.angleRotate));
               editCanvasCtx.beginPath();
               editCanvasCtx.arc(this.rotateCenter.x, this.rotateCenter.y, this.rotateCenter.r, 0, 2 * Math.PI, false);
               editCanvasCtx.lineWidth = 5;
-              editCanvasCtx.strokeStyle = 'rgba(255,255, 255, 0.7)';
+              editCanvasCtx.strokeStyle = 'rgba(200,200, 200, 0.5)';
               editCanvasCtx.stroke();
+              editCanvasCtx.closePath();
+              editCanvasCtx.beginPath();
+              editCanvasCtx.arc(this.rotateCenter.x, this.rotateCenter.y, this.rotateCenter.r, 0, this.rotateCenter.angleRotate, false);
+              editCanvasCtx.lineWidth = 5;
+              editCanvasCtx.strokeStyle = 'rgba(153, 205,0, 0.8)';
+              editCanvasCtx.stroke();
+              editCanvasCtx.closePath();
               editCanvasCtx.beginPath();
               editCanvasCtx.arc(this.rotateCenter.sx, this.rotateCenter.sy, this.iCSize[4], 0, 2 * Math.PI, false);
-              editCanvasCtx.fillStyle = 'rgba(51,184, 229, 0.9)';
+              editCanvasCtx.fillStyle = 'rgba(51,184, 229,0.8)';
               editCanvasCtx.fill();
               editCanvasCtx.lineWidth = 5;
-              editCanvasCtx.strokeStyle = 'rgba(0,153, 205, 0.8)';
+              editCanvasCtx.strokeStyle = 'rgba(0, 153,204, 0.6)';
               editCanvasCtx.stroke();
-              editCanvasCtx.beginPath();
-              editCanvasCtx.arc(this.rotateCenter.x, this.rotateCenter.y, this.rotateCenter.r, 0, this.rotateCenter.angle, false);
-              editCanvasCtx.lineWidth = 5;
-              editCanvasCtx.strokeStyle = 'rgba(200,123, 200, 0.9)';
-              editCanvasCtx.stroke();
-              if (this.rotateCenter.isrotate) {
-                mainCanvasCtx.rotate(this.rotateCenter.angleRotate * Math.PI / 180);
-                srcCanvasCtx.rotate(this.rotateCenter.angleRotate * Math.PI / 180);
-              }
+              editCanvasCtx.closePath();
             }
           };
           SelectionCrop.prototype.draw = function () {
@@ -209,20 +212,32 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
               viewCanvasCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
               viewCanvasCtx.drawImage(srcCanvas, this.x * ratio_width, this.y * ratio_width, this.w * ratio_width, this.h * ratio_width, this.x, this.y, this.w, this.h);
             }
-            editCanvasCtx.beginPath();
-            editCanvasCtx.fillStyle = '#fff';
+            editCanvasCtx.fillStyle = 'rgba(119,206, 238, 0.9)';
             editCanvasCtx.fillRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
             editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
             editCanvasCtx.fillRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
+            editCanvasCtx.lineWidth = 1;
+            editCanvasCtx.strokeRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
+            editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
+            editCanvasCtx.strokeRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
           };
           this.drawScene = function () {
             editCanvasCtx.clearRect(0, 0, editCanvasCtx.canvas.width, editCanvasCtx.canvas.height);
             editCanvasCtx.drawImage(image, 0, 0, editCanvasCtx.canvas.width, editCanvasCtx.canvas.height);
+            mainCanvasCtx.save();
+            srcCanvasCtx.save();
             mainCanvasCtx.clearRect(0, 0, editCanvasCtx.canvas.width, editCanvasCtx.canvas.height);
-            mainCanvasCtx.drawImage(image, 0, 0, editCanvas.width, editCanvas.height);
             srcCanvasCtx.clearRect(0, 0, image.width, image.height);
-            srcCanvasCtx.drawImage(image, 0, 0, image.width, image.height);
+            mainCanvasCtx.translate(mainCanvas.width / 2, mainCanvas.height / 2);
+            srcCanvasCtx.translate(image.width / 2, image.height / 2);
+            mainCanvasCtx.rotate(theSelection.rotateCenter.angleRotate);
+            srcCanvasCtx.rotate(theSelection.rotateCenter.angleRotate);
+            mainCanvasCtx.drawImage(image, -editCanvas.width / 2, -editCanvas.height / 2, editCanvas.width, editCanvas.height);
+            srcCanvasCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+            mainCanvasCtx.restore();
+            srcCanvasCtx.restore();
             if ($scope.cropOptions.viewShowCropTool) {
               theSelection.draw();
               theSelection.drawRotate();
@@ -289,6 +304,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           srcCanvas = document.createElement('canvas');
           srcCanvasCtx = srcCanvas.getContext('2d');
           image.onload = function () {
+            theSelection.rotateCenter.angleRotate = 0;
             if ($scope.cropOptions.outputImageWidth === 0 || $scope.cropOptions.outputImageHeight === 0) {
               $scope.cropOptions.outputImageWidth = image.width;
               $scope.cropOptions.outputImageHeight = image.height;
@@ -352,9 +368,45 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
       link: function (scope, element, attrs, cropCtrl) {
         var iMouseX = 0;
         var iMouseY = 1;
+        var myPos;
+        var canvasEdit = cropCtrl.getEditCanvas();
+        function offset(elm) {
+          try {
+            return elm.offset();
+          } catch (e) {
+          }
+          var rawDom = elm[0];
+          var _x = 0;
+          var _y = 0;
+          var body = document.documentElement || document.body;
+          var scrollX = window.pageXOffset || body.scrollLeft;
+          var scrollY = window.pageYOffset || body.scrollTop;
+          _x = rawDom.getBoundingClientRect().left + scrollX;
+          _y = rawDom.getBoundingClientRect().top + scrollY;
+          return {
+            left: _x,
+            top: _y
+          };
+        }
+        var findPos = function (obj) {
+          obj = obj[0];
+          var curleft = 0;
+          var curtop = 0;
+          if (obj.offsetParent) {
+            do {
+              curleft += obj.offsetLeft;
+              curtop += obj.offsetTop;
+            } while (obj = obj.offsetParent);
+            return {
+              left: curleft,
+              top: curtop
+            };
+          }
+        };
         var mousemove = function (e) {
-          iMouseX = Math.floor(e.pageX - element.prop('offsetLeft'));
-          iMouseY = Math.floor(e.pageY - element.prop('offsetTop'));
+          myPos = findPos(element.children());
+          iMouseX = Math.floor(e.pageX - myPos.left);
+          iMouseY = Math.floor(e.pageY - myPos.top);
           cropCtrl.theSelection.rotateCenter.isrotate = false;
           if (cropCtrl.theSelection.bDragAll) {
             cropCtrl.theSelection.x = iMouseX - cropCtrl.theSelection.px;
@@ -417,15 +469,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
           }
           if (cropCtrl.theSelection.bDrag[4]) {
             cropCtrl.theSelection.rotateCenter.isrotate = true;
-            if (cropCtrl.theSelection.rotateCenter.mouseY < iMouseY) {
-              cropCtrl.theSelection.rotateCenter.mouseY = iMouseY;
-              cropCtrl.theSelection.rotateCenter.angle = cropCtrl.theSelection.rotateCenter.angle + 0.005;
-              cropCtrl.theSelection.rotateCenter.angleRotate = 1;
-            } else {
-              cropCtrl.theSelection.rotateCenter.mouseY = iMouseY;
-              cropCtrl.theSelection.rotateCenter.angle = cropCtrl.theSelection.rotateCenter.angle - 0.005;
-              cropCtrl.theSelection.rotateCenter.angleRotate = -1;
-            }
+            cropCtrl.theSelection.rotateCenter.angleRotate = Math.atan2(iMouseY - cropCtrl.theSelection.rotateCenter.y, iMouseX - cropCtrl.theSelection.rotateCenter.x);
           }
           if (iFW > cropCtrl.theSelection.csizeh * 2 && iFH > cropCtrl.theSelection.csizeh * 2) {
             cropCtrl.theSelection.w = iFW;
@@ -436,8 +480,9 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
           cropCtrl.drawScene();
         };
         var mousedown = function (e) {
-          iMouseX = Math.floor(e.pageX - element.prop('offsetLeft'));
-          iMouseY = Math.floor(e.pageY - element.prop('offsetTop'));
+          myPos = findPos(element.children());
+          iMouseX = Math.floor(e.pageX - myPos.left);
+          iMouseY = Math.floor(e.pageY - myPos.top);
           cropCtrl.theSelection.px = iMouseX - cropCtrl.theSelection.x;
           cropCtrl.theSelection.py = iMouseY - cropCtrl.theSelection.y;
           if (cropCtrl.theSelection.bHow[0]) {
@@ -482,7 +527,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
         element.bind('mousedown', mousedown);
         element.bind('mouseup', mouseUp);
         element.bind('dblclick', cropCtrl.getImage);
-        element.append(cropCtrl.getEditCanvas());
+        element.append(canvasEdit);
       }
     };
   }]);
