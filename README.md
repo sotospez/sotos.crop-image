@@ -6,6 +6,10 @@ crop images, put watermark and save directive in angular
 
 ###v0.0.1
 
+###v0.0.2
+fix firefox
+fix rotate
+
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
 
