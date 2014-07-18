@@ -1,8 +1,8 @@
 /*! 
  Name        : sotos.crop-image 
- Version     : 0.0.2 
+ Version     : 0.0.3 
  Author      : sotiris pezouvanis - sotos.gr mastery.gr
- Date        : 08-01-2014 
+ Date        : 18-07-2014 
  Description : Crop and rotate images and put watermark in final image angular module  
  Homepage    : https://github.com/sotospez/sotos.crop-image.git 
  Demopage    : http://sotos.gr/demos/crop-image 
@@ -61,10 +61,15 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             $scope.cropOptions.watermarkTextStrokeLineWidth= $scope.cropOptions.watermarkTextStrokeLineWidth||1;
             $scope.cropOptions.watermarkTextFont= $scope.cropOptions.watermarkTextFont||'Arial';
 
-
-            imageType = "image/jpeg";
+            $scope.cropOptions.inModal= $scope.cropOptions.inModal||false;
+            this.inModal =  $scope.cropOptions.inModal;
+            
+            //imageType = "image/jpeg";
 
             if(  $scope.cropOptions.outputImageType==='jpg'){
+                imageType = "image/jpeg";
+            }
+             if(  $scope.cropOptions.outputImageType==='jpeg'){
                 imageType = "image/jpeg";
             }
             if(  $scope.cropOptions.outputImageType==='png'){
@@ -598,7 +603,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
 
             //find the position of elemen work also with modal
             //fix the offset in firefox and modal
-           var findPos = function (obj) {
+           var findPos= function (obj) {
                obj =obj[0];
                 var curleft = 0;
                 var  curtop = 0;
@@ -611,18 +616,47 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 return  { left: curleft, top:curtop };
             }
             };
-
-
+            
+  var detectBrowser = function (){
+  var val = navigator.userAgent.toLowerCase(); 
+  
+  if(val.indexOf("firefox") > -1)
+  {
+ return 'firefox';
+  }
+  else if(val.indexOf("chrome") > -1)
+  {
+ return 'chrome';
+  }
+  else if(val.indexOf("opera") > -1)
+  {
+     return 'opera';
+  }
+  else if(val.indexOf("msie") > -1)
+  {
+ return 'msie';
+  }
+  else if(val.indexOf("safari") > -1)
+  {
+ return 'safari';
+  }
+}; 
 
             var mousemove =function(e){
                 myPos=findPos(element.children());
 
                 //fix the offset in firefox and modal
+                //thanks to yasar
+                if(cropCtrl.inModal){
+                iMouseX = Math.floor(e.clientX  -myPos.left);
+                iMouseY = Math.floor(e.clientY  -myPos.top);
+                   }else{
                 iMouseX = Math.floor(e.pageX -myPos.left);
                 iMouseY = Math.floor(e.pageY -myPos.top);
-
-
-
+              	
+                  	}
+                
+               
                 cropCtrl.theSelection.rotateCenter.isrotate=false;
                 // in case of drag of whole selector
                 if (cropCtrl.theSelection.bDragAll) {
@@ -739,10 +773,18 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
             var  mousedown = function(e) {
                 myPos=findPos(element.children());
 
-                //fix the offset in firefox and modal
+                
+               //fix the offset in firefox and modal
+                //thanks to yasar
+                if(cropCtrl.inModal){
+                iMouseX = Math.floor(e.clientX  -myPos.left);
+                iMouseY = Math.floor(e.clientY  -myPos.top);
+                   }else{
                 iMouseX = Math.floor(e.pageX -myPos.left);
                 iMouseY = Math.floor(e.pageY -myPos.top);
-
+              	
+                  	}
+                
                 cropCtrl.theSelection.px = iMouseX -   cropCtrl.theSelection.x;
                 cropCtrl.theSelection.py = iMouseY -   cropCtrl.theSelection.y;
 

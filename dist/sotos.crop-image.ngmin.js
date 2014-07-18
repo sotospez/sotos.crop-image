@@ -37,8 +37,12 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           $scope.cropOptions.watermarkTextStrokeColor = $scope.cropOptions.watermarkTextFillColor || 'rgba(255,0, 0, 0.8)';
           $scope.cropOptions.watermarkTextStrokeLineWidth = $scope.cropOptions.watermarkTextStrokeLineWidth || 1;
           $scope.cropOptions.watermarkTextFont = $scope.cropOptions.watermarkTextFont || 'Arial';
-          imageType = 'image/jpeg';
+          $scope.cropOptions.inModal = $scope.cropOptions.inModal || false;
+          this.inModal = $scope.cropOptions.inModal;
           if ($scope.cropOptions.outputImageType === 'jpg') {
+            imageType = 'image/jpeg';
+          }
+          if ($scope.cropOptions.outputImageType === 'jpeg') {
             imageType = 'image/jpeg';
           }
           if ($scope.cropOptions.outputImageType === 'png') {
@@ -403,10 +407,29 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
             };
           }
         };
+        var detectBrowser = function () {
+          var val = navigator.userAgent.toLowerCase();
+          if (val.indexOf('firefox') > -1) {
+            return 'firefox';
+          } else if (val.indexOf('chrome') > -1) {
+            return 'chrome';
+          } else if (val.indexOf('opera') > -1) {
+            return 'opera';
+          } else if (val.indexOf('msie') > -1) {
+            return 'msie';
+          } else if (val.indexOf('safari') > -1) {
+            return 'safari';
+          }
+        };
         var mousemove = function (e) {
           myPos = findPos(element.children());
-          iMouseX = Math.floor(e.pageX - myPos.left);
-          iMouseY = Math.floor(e.pageY - myPos.top);
+          if (cropCtrl.inModal) {
+            iMouseX = Math.floor(e.clientX - myPos.left);
+            iMouseY = Math.floor(e.clientY - myPos.top);
+          } else {
+            iMouseX = Math.floor(e.pageX - myPos.left);
+            iMouseY = Math.floor(e.pageY - myPos.top);
+          }
           cropCtrl.theSelection.rotateCenter.isrotate = false;
           if (cropCtrl.theSelection.bDragAll) {
             cropCtrl.theSelection.x = iMouseX - cropCtrl.theSelection.px;
@@ -481,8 +504,13 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
         };
         var mousedown = function (e) {
           myPos = findPos(element.children());
-          iMouseX = Math.floor(e.pageX - myPos.left);
-          iMouseY = Math.floor(e.pageY - myPos.top);
+          if (cropCtrl.inModal) {
+            iMouseX = Math.floor(e.clientX - myPos.left);
+            iMouseY = Math.floor(e.clientY - myPos.top);
+          } else {
+            iMouseX = Math.floor(e.pageX - myPos.left);
+            iMouseY = Math.floor(e.pageY - myPos.top);
+          }
           cropCtrl.theSelection.px = iMouseX - cropCtrl.theSelection.x;
           cropCtrl.theSelection.py = iMouseY - cropCtrl.theSelection.y;
           if (cropCtrl.theSelection.bHow[0]) {
