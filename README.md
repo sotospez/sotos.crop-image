@@ -12,6 +12,10 @@ fix firefox
 
 fix rotate
 
+###v0.0.3
+fix modal 
+with Option Parameter inModal
+
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
 
