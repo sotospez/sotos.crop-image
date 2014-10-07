@@ -1,0 +1,15 @@
+{
+  "name": "sotos.crop-image",
+  "version": "0.0.3",
+  "authors": [
+    "sotospez"
+  ],
+  "description": "crop images, put watermark and save directive in angular",
+   "keywords": [
+    "crop-image",
+    "angularjs"
+  ],
+  "license": "MIT",
+  "homepage": "http://sotos.gr/demos/crop-image/",
+  "private": true
+ }
