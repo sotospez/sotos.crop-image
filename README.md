@@ -20,9 +20,9 @@ with Option Parameter inModal
 
 
 ###Bower Install
-...
+```
 bower install sotos.crop-image
-...
+```
 
 ###Use
 ```
