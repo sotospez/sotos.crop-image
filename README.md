@@ -19,8 +19,10 @@ with Option Parameter inModal
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
 
-Bower Install
+###Bower Install
+...
 bower install sotos.crop-image
+...
 
 ###Use
 ```
