@@ -1,6 +1,10 @@
 {
   "name": "sotos.crop-image",
   "version": "0.0.3",
+  "main": "dist/sotos.crop-image.min.js",
+  "ignore": [
+    "**/*.txt"
+  ],
   "authors": [
     "sotospez"
   ],
