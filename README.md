@@ -64,7 +64,7 @@ in controller required
             $scope.options.viewSizeWidth= 500;      // canvas size default 480
             $scope.options.viewSizeHeight= 500;
  
-            $scope.cropOptions.viewShowRotateBtn= true;   //if rotate tool show default true
+            $scope.options.viewShowRotateBtn= true;   //if rotate tool show default true
  
             $scope.options.outputImageWidth= 0 ; //output size of image 0 take the size of source image
             $scope.options.outputImageHeight= 0;
