@@ -5,7 +5,8 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
       transclude: true,
       scope: {
         cropOptions: '=cropOptions',
-        imageOut: '='
+        imageOut: '=',
+        cropImageSave: '&'
       },
       controller: [
         '$scope',
@@ -295,10 +296,9 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
               $scope.cropOptions.image = temp_canvas.toDataURL(imageType);
               $scope.imageOut = $scope.cropOptions.image;
               $scope.cropOptions.viewShowCropTool = false;
-              $scope.$apply();
             }
           };
-          var theSelection = new SelectionCrop(100, 100, 100, 100);
+          var theSelection = new SelectionCrop(50, 50, 50, 50);
           editCanvas = document.createElement('canvas');
           editCanvasCtx = editCanvas.getContext('2d');
           viewCanvas = document.createElement('canvas');
@@ -352,7 +352,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           $scope.$watch('cropOptions.watermarkText', loadImage);
           $scope.$on('cropImageSave', function () {
             $scope.imageOut = srcCanvas.toDataURL(imageType);
-            window.open(srcCanvas.toDataURL(imageType).replace(imageType, 'image/octet-stream'));
+            $scope.cropImageSave()($scope.imageOut);
           });
           $scope.$on('cropImageShow', function () {
             $scope.imageOut = srcCanvas.toDataURL(imageType);
@@ -373,6 +373,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
         var iMouseX = 0;
         var iMouseY = 1;
         var myPos;
+        var isTouch = false;
         var canvasEdit = cropCtrl.getEditCanvas();
         function offset(elm) {
           try {
@@ -427,8 +428,13 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
             iMouseX = Math.floor(e.clientX - myPos.left);
             iMouseY = Math.floor(e.clientY - myPos.top);
           } else {
-            iMouseX = Math.floor(e.pageX - myPos.left);
-            iMouseY = Math.floor(e.pageY - myPos.top);
+            if (isTouch) {
+              iMouseX = Math.floor(e.targetTouches[0].pageX - myPos.left);
+              iMouseY = Math.floor(e.targetTouches[0].pageY - myPos.top);
+            } else {
+              iMouseX = Math.floor(e.pageX - myPos.left);
+              iMouseY = Math.floor(e.pageY - myPos.top);
+            }
           }
           cropCtrl.theSelection.rotateCenter.isrotate = false;
           if (cropCtrl.theSelection.bDragAll) {
@@ -508,8 +514,13 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
             iMouseX = Math.floor(e.clientX - myPos.left);
             iMouseY = Math.floor(e.clientY - myPos.top);
           } else {
-            iMouseX = Math.floor(e.pageX - myPos.left);
-            iMouseY = Math.floor(e.pageY - myPos.top);
+            if (isTouch) {
+              iMouseX = Math.floor(e.targetTouches[0].pageX - myPos.left);
+              iMouseY = Math.floor(e.targetTouches[0].pageY - myPos.top);
+            } else {
+              iMouseX = Math.floor(e.pageX - myPos.left);
+              iMouseY = Math.floor(e.pageY - myPos.top);
+            }
           }
           cropCtrl.theSelection.px = iMouseX - cropCtrl.theSelection.x;
           cropCtrl.theSelection.py = iMouseY - cropCtrl.theSelection.y;
@@ -551,9 +562,24 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
           cropCtrl.theSelection.px = 0;
           cropCtrl.theSelection.py = 0;
         };
+        var touchDown = function (e) {
+          isTouch = true;
+          mousedown(e);
+        };
+        var touchMove = function (e) {
+          isTouch = true;
+          mousemove(e);
+        };
+        var touchUp = function (e) {
+          isTouch = false;
+          mouseUp(e);
+        };
         element.bind('mousemove', mousemove);
         element.bind('mousedown', mousedown);
         element.bind('mouseup', mouseUp);
+        element.bind('touchstart', touchDown);
+        element.bind('touchmove', touchMove);
+        element.bind('touchend', touchUp);
         element.bind('dblclick', cropCtrl.getImage);
         element.append(canvasEdit);
       }

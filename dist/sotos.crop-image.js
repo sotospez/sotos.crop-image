@@ -2,7 +2,7 @@
  Name        : sotos.crop-image 
  Version     : 0.0.3 
  Author      : sotiris pezouvanis - sotos.gr mastery.gr
- Date        : 18-07-2014 
+ Date        : 25-03-2015 
  Description : Crop and rotate images and put watermark in final image angular module  
  Homepage    : https://github.com/sotospez/sotos.crop-image.git 
  Demopage    : http://sotos.gr/demos/crop-image 
@@ -16,7 +16,9 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
         transclude: true,
         scope: {
             cropOptions: '=cropOptions',
-            imageOut: '='
+            imageOut: '=' ,
+            cropImageSave:'&'
+
         },
         controller:['$scope', function($scope) {
             var editCanvas ,viewCanvas,mainCanvas,srcCanvas;
@@ -433,7 +435,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                   $scope.imageOut= $scope.cropOptions.image;
                      //close the crop tool
                   $scope.cropOptions.viewShowCropTool=false;
-                  $scope.$apply();
+                 // $scope.$apply();
                  }
 
             };
@@ -442,7 +444,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
 
 
             //create the selection
-            var  theSelection =  new SelectionCrop(100,100,100,100);
+            var  theSelection =  new SelectionCrop(50,50,50,50);
 
 
 
@@ -547,13 +549,14 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             $scope.$on('cropImageSave',function(){
 
                 $scope.imageOut= srcCanvas.toDataURL(imageType);
-                window.open(srcCanvas.toDataURL(imageType).replace(imageType, "image/octet-stream"));
-
+          //      window.open(srcCanvas.toDataURL(imageType).replace(imageType, "image/octet-stream"));
+                $scope.cropImageSave( )($scope.imageOut);
             });
             $scope.$on('cropImageShow',function(){
                 $scope.imageOut= srcCanvas.toDataURL(imageType);
 
             });
+
 
 
             $scope.$on('cropImage',self.getImage);
@@ -582,6 +585,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
             var iMouseX=0;
             var iMouseY=1;
             var myPos;
+            var isTouch=false;
 
             var canvasEdit=cropCtrl.getEditCanvas();
 
@@ -651,9 +655,15 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 iMouseX = Math.floor(e.clientX  -myPos.left);
                 iMouseY = Math.floor(e.clientY  -myPos.top);
                    }else{
-                iMouseX = Math.floor(e.pageX -myPos.left);
-                iMouseY = Math.floor(e.pageY -myPos.top);
-              	
+                    if( isTouch){
+                        iMouseX = Math.floor(e.targetTouches[0].pageX -myPos.left);
+                        iMouseY = Math.floor(e.targetTouches[0].pageY -myPos.top);
+
+                    }else{
+                        iMouseX = Math.floor(e.pageX -myPos.left);
+                        iMouseY = Math.floor(e.pageY -myPos.top);
+
+                    }
                   	}
                 
                
@@ -780,8 +790,15 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 iMouseX = Math.floor(e.clientX  -myPos.left);
                 iMouseY = Math.floor(e.clientY  -myPos.top);
                    }else{
-                iMouseX = Math.floor(e.pageX -myPos.left);
-                iMouseY = Math.floor(e.pageY -myPos.top);
+                    if( isTouch){
+
+                        iMouseX = Math.floor(e.targetTouches[0].pageX -myPos.left);
+                        iMouseY = Math.floor(e.targetTouches[0].pageY -myPos.top);
+                    }else{
+                        iMouseX = Math.floor(e.pageX -myPos.left);
+                        iMouseY = Math.floor(e.pageY -myPos.top);
+
+                    }
               	
                   	}
                 
@@ -841,9 +858,33 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
 
 
 
+            var  touchDown = function(e) {
+                isTouch=true;
+                mousedown(e);
+
+            };
+            var  touchMove = function(e) {
+                isTouch=true;
+                mousemove(e);
+            };
+
+            var  touchUp = function(e) {
+                isTouch=false;
+                mouseUp(e);
+            };
+
             element.bind('mousemove', mousemove);
             element.bind('mousedown', mousedown);
             element.bind('mouseup', mouseUp);
+
+            element.bind('touchstart', touchDown);
+            element.bind('touchmove', touchMove);
+            element.bind('touchend', touchUp);
+
+
+
+
+
             element.bind('dblclick', cropCtrl.getImage);
             element.append(canvasEdit);
 
