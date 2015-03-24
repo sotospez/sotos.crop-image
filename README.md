@@ -18,12 +18,7 @@ with Option Parameter inModal
 
 ###v0.0.4
 fix save (add function ) 
- <image-crop  image-out="imageOut" crop-options="options" ng-transclude crop-image-save="saveCrop">
- 
-  $scope.saveCrop= function(image){
-            console.log(image);
-        };
-        
+
 fix touch
 
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
@@ -38,7 +33,7 @@ bower install sotos.crop-image
 ```
  <html>
   <body>
-    <image-crop image-out="imageOut"  crop-options="options" ng-transclude>
+    <image-crop image-out="imageOut"  crop-options="options" ng-transclude crop-image-save="saveCrop">
        <edit-crop></edit-crop>
        <view-crop></view-crop>
     </image-crop>
