@@ -1,0 +1,20 @@
+{
+  "name": "sotos.crop-image",
+  "version": "0.0.4",
+  "description": "crop images, put watermark and save directive in angular ",
+  "main": "dist/sotos.crop-image.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sotospez/sotos.crop-image.git"
+  },
+  "keywords": [
+    "crop-image",
+    "angularjs"
+  ],
+  "author": "sotospez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sotospez/sotos.crop-image/issues"
+  },
+  "homepage": "https://github.com/sotospez/sotos.crop-image#readme"
+}
