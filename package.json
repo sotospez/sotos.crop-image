@@ -1,6 +1,6 @@
 {
   "name": "sotos.crop-image",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "crop images, put watermark and save directive in angular ",
   "main": "dist/sotos.crop-image.js",
   "repository": {

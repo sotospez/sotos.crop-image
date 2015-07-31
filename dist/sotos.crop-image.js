@@ -38,16 +38,24 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             //no use radio btn create into canvas
             $scope.cropOptions.viewShowFixedBtn=false;
             //if rotate tool show
-            $scope.cropOptions.viewShowRotateBtn= $scope.cropOptions.viewShowRotateBtn||true;
+            if($scope.cropOptions.viewShowRotateBtn === undefined) {
+                $scope.cropOptions.viewShowRotateBtn = true;
+            }
             //output size of image
             $scope.cropOptions.outputImageWidth= $scope.cropOptions.outputImageWidth||0;
             $scope.cropOptions.outputImageHeight= $scope.cropOptions.outputImageHeight||0;
-            $scope.cropOptions.outputImageRatioFixed= $scope.cropOptions.outputImageRatioFixed||true;
+            if($scope.cropOptions.outputImageRatioFixed === undefined){
+                $scope.cropOptions.outputImageRatioFixed = true;
+            }
             $scope.cropOptions.outputImageType= $scope.cropOptions.outputImageType||"jpeg";
             //if this check the image crop by the original size off image and no resize
-            $scope.cropOptions.outputImageSelfSizeCrop= $scope.cropOptions.outputImageSelfSizeCrop||true;
+            if($scope.cropOptions.outputImageSelfSizeCrop === undefined){
+                $scope.cropOptions.outputImageSelfSizeCrop= true;
+            }
             //show the crop tool use only for crop and crop again one image
-            $scope.cropOptions.viewShowCropTool= $scope.cropOptions.viewShowCropTool||true;
+            if($scope.cropOptions.viewShowCropTool === undefined){
+                $scope.cropOptions.viewShowCropTool= true;
+            }
 
             //this is the watermark if is set the watermark tool
             //show after crop
@@ -234,7 +242,6 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             SelectionCrop.prototype.drawRotate = function(){
 
                 if($scope.cropOptions.viewShowRotateBtn){
-
                     this.rotateCenter.r=this.w > this.h ? this.w : this.h ;   //r radian of circle
                     this.rotateCenter.r =   Math.floor(this.rotateCenter.r/Math.PI);
                     this.rotateCenter.x=  Math.floor(this.x + (this.w/2));   //x center of bif circle
@@ -275,7 +282,6 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
 
             //create the crop tool
             SelectionCrop.prototype.draw = function(){
-
                 this.sizeOutRatio =$scope.cropOptions.outputImageWidth/$scope.cropOptions.outputImageHeight;
 
                 //check if the  ratio output if fixed to make the changes
@@ -291,8 +297,9 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                 editCanvasCtx.fillRect(0, 0, editCanvasCtx.canvas.width, editCanvasCtx.canvas.height);
 
                 //draw the rect
-                editCanvasCtx.strokeStyle = '#000';
+                editCanvasCtx.strokeStyle = '#fff';
                 editCanvasCtx.lineWidth = 2;
+                editCanvasCtx.setLineDash([5,2]);
                 editCanvasCtx.strokeRect(this.x, this.y, this.w, this.h);
                 // draw part of original image
                 if (this.w > 0 && this.h > 0) {
@@ -303,18 +310,11 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                 }
 
                  // draw resize cubes
-                editCanvasCtx.fillStyle = 'rgba(119,206, 238, 0.9)';
-                editCanvasCtx.fillRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
-                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
-                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
-                editCanvasCtx.fillRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
-
-                editCanvasCtx.lineWidth = 1;
-                editCanvasCtx.strokeRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
-                editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
-                editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
-                editCanvasCtx.strokeRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
-
+                editCanvasCtx.fillStyle = 'rgba(252, 93, 86, 1)';
+                editCanvasCtx.fillRect(this.x - this.iCSize[0] * 1.5 / 2, this.y - this.iCSize[0] * 1.5 / 2, this.iCSize[0] * 1.5, this.iCSize[0] * 1.5);
+                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1] * 1.5 / 2, this.y - this.iCSize[1] * 1.5 / 2, this.iCSize[1] * 1.5, this.iCSize[1] * 1.5);
+                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2] * 1.5 / 2, this.y + this.h - this.iCSize[2] * 1.5 / 2, this.iCSize[2] * 1.5, this.iCSize[2] * 1.5);
+                editCanvasCtx.fillRect(this.x - this.iCSize[3] * 1.5 / 2, this.y + this.h - this.iCSize[3] * 1.5 / 2, this.iCSize[3] * 1.5, this.iCSize[3] * 1.5);
             };
 
 
@@ -443,8 +443,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
 
 
 
-            //create the selection
-            var  theSelection =  new SelectionCrop(50,50,50,50);
+
 
 
 
@@ -458,6 +457,10 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             //the canvas with full image
             srcCanvas  =document.createElement("canvas");
             srcCanvasCtx= srcCanvas.getContext('2d');
+
+            //create the selection
+            var theSelection =  new SelectionCrop(50, 50, 250, 250);
+
 
 //todo check if is good to set
 //            viewCanvasCtx.webkitEnableImageSmoothing =
@@ -664,7 +667,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                         iMouseY = Math.floor(e.pageY -myPos.top);
 
                     }
-                  	}
+                    }
                 
                
                 cropCtrl.theSelection.rotateCenter.isrotate=false;
@@ -731,39 +734,33 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 var iFW, iFH, iFX, iFY;
 
                 if (cropCtrl.theSelection.bDrag[0]) {
+                    //topleft
                     iFX = iMouseX - cropCtrl.theSelection.px;
                     iFY = iMouseY - cropCtrl.theSelection.py;
                     iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[1]) {
-
+                    //toprght
                     iFX = cropCtrl.theSelection.x;
                     iFY = iMouseY - cropCtrl.theSelection.py;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[2]) {
-
+                    //botleft
                     iFX = cropCtrl.theSelection.x;
                     iFY = cropCtrl.theSelection.y;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[3]) {
-
+                    //botright
                     iFX = iMouseX - cropCtrl.theSelection.px;
                     iFY = cropCtrl.theSelection.y;
                     iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
                 }
-
-                //the rotate
-                if (cropCtrl.theSelection.bDrag[4]) {
-                    cropCtrl.theSelection.rotateCenter.isrotate=true;
-                    cropCtrl.theSelection.rotateCenter.angleRotate =  Math.atan2(iMouseY-cropCtrl.theSelection.rotateCenter.y, iMouseX-cropCtrl.theSelection.rotateCenter.x);
-                }
-
 
 
 
@@ -799,8 +796,8 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                         iMouseY = Math.floor(e.pageY -myPos.top);
 
                     }
-              	
-                  	}
+                
+                    }
                 
                 cropCtrl.theSelection.px = iMouseX -   cropCtrl.theSelection.x;
                 cropCtrl.theSelection.py = iMouseY -   cropCtrl.theSelection.y;
