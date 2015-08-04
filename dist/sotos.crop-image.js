@@ -1,6 +1,6 @@
 /*! 
  Name        : sotos.crop-image 
- Version     : 0.0.3 
+ Version     : 0.0.4 
  Author      : sotiris pezouvanis - sotos.gr mastery.gr
  Date        : 25-03-2015 
  Description : Crop and rotate images and put watermark in final image angular module  
@@ -38,16 +38,24 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             //no use radio btn create into canvas
             $scope.cropOptions.viewShowFixedBtn=false;
             //if rotate tool show
-            $scope.cropOptions.viewShowRotateBtn= $scope.cropOptions.viewShowRotateBtn||true;
+            if($scope.cropOptions.viewShowRotateBtn === undefined) {
+                $scope.cropOptions.viewShowRotateBtn = true;
+            }
             //output size of image
             $scope.cropOptions.outputImageWidth= $scope.cropOptions.outputImageWidth||0;
             $scope.cropOptions.outputImageHeight= $scope.cropOptions.outputImageHeight||0;
-            $scope.cropOptions.outputImageRatioFixed= $scope.cropOptions.outputImageRatioFixed||true;
+            if($scope.cropOptions.outputImageRatioFixed === undefined){
+                $scope.cropOptions.outputImageRatioFixed = true;
+            }
             $scope.cropOptions.outputImageType= $scope.cropOptions.outputImageType||"jpeg";
             //if this check the image crop by the original size off image and no resize
-            $scope.cropOptions.outputImageSelfSizeCrop= $scope.cropOptions.outputImageSelfSizeCrop||true;
+            if($scope.cropOptions.outputImageSelfSizeCrop === undefined){
+                $scope.cropOptions.outputImageSelfSizeCrop= true;
+            }
             //show the crop tool use only for crop and crop again one image
-            $scope.cropOptions.viewShowCropTool= $scope.cropOptions.viewShowCropTool||true;
+            if($scope.cropOptions.viewShowCropTool === undefined){
+                $scope.cropOptions.viewShowCropTool= true;
+            }
 
             //this is the watermark if is set the watermark tool
             //show after crop
@@ -234,7 +242,6 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             SelectionCrop.prototype.drawRotate = function(){
 
                 if($scope.cropOptions.viewShowRotateBtn){
-
                     this.rotateCenter.r=this.w > this.h ? this.w : this.h ;   //r radian of circle
                     this.rotateCenter.r =   Math.floor(this.rotateCenter.r/Math.PI);
                     this.rotateCenter.x=  Math.floor(this.x + (this.w/2));   //x center of bif circle
@@ -285,14 +292,32 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                            }else{
                         this.w= this.h*this.sizeOutRatio;
                     }
+                    if (this.x < 0) {
+                        this.x = 0;
+                    }
+                    if (this.y < 0) {
+                        this.y = 0;
+                    }
+                    if (this.x + this.w > editCanvas.width) {
+                        this.w = editCanvas.width - this.x;
+                        this.h = this.w / this.sizeOutRatio;
+                    }
+                    if (this.y + this.h > editCanvas.height) {
+                        this.h = editCanvas.height - this.y;
+                        this.w = this.h * this.sizeOutRatio;
+                    }
                }
+
+
+
                 // and make it darker
                 editCanvasCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                 editCanvasCtx.fillRect(0, 0, editCanvasCtx.canvas.width, editCanvasCtx.canvas.height);
 
                 //draw the rect
-                editCanvasCtx.strokeStyle = '#000';
+                editCanvasCtx.strokeStyle = '#fff';
                 editCanvasCtx.lineWidth = 2;
+                editCanvasCtx.setLineDash([5,2]);
                 editCanvasCtx.strokeRect(this.x, this.y, this.w, this.h);
                 // draw part of original image
                 if (this.w > 0 && this.h > 0) {
@@ -303,18 +328,11 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                 }
 
                  // draw resize cubes
-                editCanvasCtx.fillStyle = 'rgba(119,206, 238, 0.9)';
-                editCanvasCtx.fillRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
-                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
-                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
-                editCanvasCtx.fillRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
-
-                editCanvasCtx.lineWidth = 1;
-                editCanvasCtx.strokeRect(this.x - this.iCSize[0], this.y - this.iCSize[0], this.iCSize[0] * 2, this.iCSize[0] * 2);
-                editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[1], this.y - this.iCSize[1], this.iCSize[1] * 2, this.iCSize[1] * 2);
-                editCanvasCtx.strokeRect(this.x + this.w - this.iCSize[2], this.y + this.h - this.iCSize[2], this.iCSize[2] * 2, this.iCSize[2] * 2);
-                editCanvasCtx.strokeRect(this.x - this.iCSize[3], this.y + this.h - this.iCSize[3], this.iCSize[3] * 2, this.iCSize[3] * 2);
-
+                editCanvasCtx.fillStyle = 'rgba(252, 93, 86, 1)';
+                editCanvasCtx.fillRect(this.x - this.iCSize[0] * 1.5 / 2, this.y - this.iCSize[0] * 1.5 / 2, this.iCSize[0] * 1.5, this.iCSize[0] * 1.5);
+                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[1] * 1.5 / 2, this.y - this.iCSize[1] * 1.5 / 2, this.iCSize[1] * 1.5, this.iCSize[1] * 1.5);
+                editCanvasCtx.fillRect(this.x + this.w - this.iCSize[2] * 1.5 / 2, this.y + this.h - this.iCSize[2] * 1.5 / 2, this.iCSize[2] * 1.5, this.iCSize[2] * 1.5);
+                editCanvasCtx.fillRect(this.x - this.iCSize[3] * 1.5 / 2, this.y + this.h - this.iCSize[3] * 1.5 / 2, this.iCSize[3] * 1.5, this.iCSize[3] * 1.5);
             };
 
 
@@ -440,14 +458,6 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
 
             };
 
-
-
-
-            //create the selection
-            var  theSelection =  new SelectionCrop(50,50,50,50);
-
-
-
             //create the canvas
             editCanvas =document.createElement("canvas");
             editCanvasCtx= editCanvas.getContext('2d');
@@ -458,6 +468,10 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             //the canvas with full image
             srcCanvas  =document.createElement("canvas");
             srcCanvasCtx= srcCanvas.getContext('2d');
+
+            //create the selection
+            var theSelection =  new SelectionCrop(50, 50, 250, 250);
+
 
 //todo check if is good to set
 //            viewCanvasCtx.webkitEnableImageSmoothing =
@@ -644,34 +658,51 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
   {
  return 'safari';
   }
-}; 
+};
+
+            function fixSelectionBoxByMove(selection){
+                if (selection.x < 0) {
+                    selection.x = 0;
+                }
+                if (selection.y < 0) {
+                    selection.y = 0;
+                }
+
+                if (selection.x + selection.w > canvasEdit.width) {
+                    selection.x = canvasEdit.width - selection.w;
+                }
+                if (selection.y + selection.h > canvasEdit.height) {
+                    selection.y = canvasEdit.height - selection.h;
+                }
+            }
 
             var mousemove =function(e){
-                myPos=findPos(element.children());
+                myPos = findPos(element.children());
 
                 //fix the offset in firefox and modal
                 //thanks to yasar
-                if(cropCtrl.inModal){
-                iMouseX = Math.floor(e.clientX  -myPos.left);
-                iMouseY = Math.floor(e.clientY  -myPos.top);
-                   }else{
-                    if( isTouch){
-                        iMouseX = Math.floor(e.targetTouches[0].pageX -myPos.left);
-                        iMouseY = Math.floor(e.targetTouches[0].pageY -myPos.top);
+                if (cropCtrl.inModal) {
+                    iMouseX = Math.floor(e.clientX - myPos.left);
+                    iMouseY = Math.floor(e.clientY - myPos.top);
+                } else {
+                    if (isTouch) {
+                        iMouseX = Math.floor(e.targetTouches[0].pageX - myPos.left);
+                        iMouseY = Math.floor(e.targetTouches[0].pageY - myPos.top);
 
-                    }else{
-                        iMouseX = Math.floor(e.pageX -myPos.left);
-                        iMouseY = Math.floor(e.pageY -myPos.top);
+                    } else {
+                        iMouseX = Math.floor(e.pageX - myPos.left);
+                        iMouseY = Math.floor(e.pageY - myPos.top);
 
                     }
-                  	}
-                
-               
-                cropCtrl.theSelection.rotateCenter.isrotate=false;
+                }
+
+                cropCtrl.theSelection.rotateCenter.isrotate = false;
                 // in case of drag of whole selector
                 if (cropCtrl.theSelection.bDragAll) {
                     cropCtrl.theSelection.x = iMouseX - cropCtrl.theSelection.px;
                     cropCtrl.theSelection.y = iMouseY - cropCtrl.theSelection.py;
+
+                    fixSelectionBoxByMove(cropCtrl.theSelection);
                 }
 
                 for (var i = 0; i < 5; i++) {
@@ -680,100 +711,92 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 }
 
                 //ratio hover reset
-                cropCtrl.theSelection.ratioHover= false;
-                cropCtrl.theSelection.ratioSize =6;
+                cropCtrl.theSelection.ratioHover = false;
+                cropCtrl.theSelection.ratioSize = 6;
 
                 // hovering over resize cubes
-                if (iMouseX >  cropCtrl.theSelection.x -  cropCtrl.theSelection.csizeh && iMouseX <  cropCtrl.theSelection.x +  cropCtrl.theSelection.csizeh &&
-                    iMouseY >  cropCtrl.theSelection.y -  cropCtrl.theSelection.csizeh && iMouseY <  cropCtrl.theSelection.y +  cropCtrl.theSelection.csizeh) {
+                if (iMouseX > cropCtrl.theSelection.x - cropCtrl.theSelection.csizeh && iMouseX < cropCtrl.theSelection.x + cropCtrl.theSelection.csizeh &&
+                    iMouseY > cropCtrl.theSelection.y - cropCtrl.theSelection.csizeh && iMouseY < cropCtrl.theSelection.y + cropCtrl.theSelection.csizeh) {
 
-                     cropCtrl.theSelection.bHow[0] = true;
-                     cropCtrl.theSelection.iCSize[0] =  cropCtrl.theSelection.csizeh;
+                    cropCtrl.theSelection.bHow[0] = true;
+                    cropCtrl.theSelection.iCSize[0] = cropCtrl.theSelection.csizeh;
                 }
-                if (iMouseX >  cropCtrl.theSelection.x +  cropCtrl.theSelection.w- cropCtrl.theSelection.csizeh && iMouseX <  cropCtrl.theSelection.x +  cropCtrl.theSelection.w +  cropCtrl.theSelection.csizeh &&
-                    iMouseY >  cropCtrl.theSelection.y -  cropCtrl.theSelection.csizeh && iMouseY <  cropCtrl.theSelection.y +  cropCtrl.theSelection.csizeh) {
+                if (iMouseX > cropCtrl.theSelection.x + cropCtrl.theSelection.w - cropCtrl.theSelection.csizeh && iMouseX < cropCtrl.theSelection.x + cropCtrl.theSelection.w + cropCtrl.theSelection.csizeh &&
+                    iMouseY > cropCtrl.theSelection.y - cropCtrl.theSelection.csizeh && iMouseY < cropCtrl.theSelection.y + cropCtrl.theSelection.csizeh) {
 
-                     cropCtrl.theSelection.bHow[1] = true;
-                     cropCtrl.theSelection.iCSize[1] =  cropCtrl.theSelection.csizeh;
+                    cropCtrl.theSelection.bHow[1] = true;
+                    cropCtrl.theSelection.iCSize[1] = cropCtrl.theSelection.csizeh;
                 }
-                if (iMouseX >  cropCtrl.theSelection.x +  cropCtrl.theSelection.w- cropCtrl.theSelection.csizeh && iMouseX <  cropCtrl.theSelection.x +  cropCtrl.theSelection.w +  cropCtrl.theSelection.csizeh &&
-                    iMouseY >  cropCtrl.theSelection.y +  cropCtrl.theSelection.h- cropCtrl.theSelection.csizeh && iMouseY <  cropCtrl.theSelection.y +  cropCtrl.theSelection.h +  cropCtrl.theSelection.csizeh) {
+                if (iMouseX > cropCtrl.theSelection.x + cropCtrl.theSelection.w - cropCtrl.theSelection.csizeh && iMouseX < cropCtrl.theSelection.x + cropCtrl.theSelection.w + cropCtrl.theSelection.csizeh &&
+                    iMouseY > cropCtrl.theSelection.y + cropCtrl.theSelection.h - cropCtrl.theSelection.csizeh && iMouseY < cropCtrl.theSelection.y + cropCtrl.theSelection.h + cropCtrl.theSelection.csizeh) {
 
-                     cropCtrl.theSelection.bHow[2] = true;
-                     cropCtrl.theSelection.iCSize[2] =  cropCtrl.theSelection.csizeh;
+                    cropCtrl.theSelection.bHow[2] = true;
+                    cropCtrl.theSelection.iCSize[2] = cropCtrl.theSelection.csizeh;
                 }
-                if (iMouseX >  cropCtrl.theSelection.x -  cropCtrl.theSelection.csizeh && iMouseX <  cropCtrl.theSelection.x +  cropCtrl.theSelection.csizeh &&
-                    iMouseY >  cropCtrl.theSelection.y +  cropCtrl.theSelection.h- cropCtrl.theSelection.csizeh && iMouseY <  cropCtrl.theSelection.y +  cropCtrl.theSelection.h +  cropCtrl.theSelection.csizeh) {
+                if (iMouseX > cropCtrl.theSelection.x - cropCtrl.theSelection.csizeh && iMouseX < cropCtrl.theSelection.x + cropCtrl.theSelection.csizeh &&
+                    iMouseY > cropCtrl.theSelection.y + cropCtrl.theSelection.h - cropCtrl.theSelection.csizeh && iMouseY < cropCtrl.theSelection.y + cropCtrl.theSelection.h + cropCtrl.theSelection.csizeh) {
 
-                     cropCtrl.theSelection.bHow[3] = true;
-                     cropCtrl.theSelection.iCSize[3] =  cropCtrl.theSelection.csizeh;
+                    cropCtrl.theSelection.bHow[3] = true;
+                    cropCtrl.theSelection.iCSize[3] = cropCtrl.theSelection.csizeh;
                 }
-
 
                 // hovering over resize rotate
-                if (iMouseX >  cropCtrl.theSelection.rotateCenter.sx -  cropCtrl.theSelection.csizeh && iMouseX <  cropCtrl.theSelection.rotateCenter.sx +  cropCtrl.theSelection.csizeh &&
-                    iMouseY >  cropCtrl.theSelection.rotateCenter.sy -  cropCtrl.theSelection.csizeh && iMouseY <  cropCtrl.theSelection.rotateCenter.sy +  cropCtrl.theSelection.csizeh) {
+                if (iMouseX > cropCtrl.theSelection.rotateCenter.sx - cropCtrl.theSelection.csizeh && iMouseX < cropCtrl.theSelection.rotateCenter.sx + cropCtrl.theSelection.csizeh &&
+                    iMouseY > cropCtrl.theSelection.rotateCenter.sy - cropCtrl.theSelection.csizeh && iMouseY < cropCtrl.theSelection.rotateCenter.sy + cropCtrl.theSelection.csizeh) {
 
                     cropCtrl.theSelection.bHow[4] = true;
-                    cropCtrl.theSelection.iCSize[4] =  cropCtrl.theSelection.csizeh;
+                    cropCtrl.theSelection.iCSize[4] = cropCtrl.theSelection.csizeh;
                 }
-
 
                 // hovering ratio
-                if (iMouseX >  40 && iMouseX <  70 &&
-                    iMouseY >  50 && iMouseY <  60) {
-                    cropCtrl.theSelection.ratioHover= true;
+                if (iMouseX > 40 && iMouseX < 70 &&
+                    iMouseY > 50 && iMouseY < 60) {
+                    cropCtrl.theSelection.ratioHover = true;
                     cropCtrl.theSelection.ratioSize = 10;
                 }
-
 
                 // in case of dragging of resize cubes
                 var iFW, iFH, iFX, iFY;
 
                 if (cropCtrl.theSelection.bDrag[0]) {
+                    //topleft
                     iFX = iMouseX - cropCtrl.theSelection.px;
                     iFY = iMouseY - cropCtrl.theSelection.py;
                     iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[1]) {
-
+                    //toprght
                     iFX = cropCtrl.theSelection.x;
                     iFY = iMouseY - cropCtrl.theSelection.py;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = cropCtrl.theSelection.h + cropCtrl.theSelection.y - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[2]) {
-
+                    //botleft
                     iFX = cropCtrl.theSelection.x;
                     iFY = cropCtrl.theSelection.y;
                     iFW = iMouseX - cropCtrl.theSelection.px - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
                 }
                 if (cropCtrl.theSelection.bDrag[3]) {
-
+                    //botright
                     iFX = iMouseX - cropCtrl.theSelection.px;
                     iFY = cropCtrl.theSelection.y;
                     iFW = cropCtrl.theSelection.w + cropCtrl.theSelection.x - iFX;
                     iFH = iMouseY - cropCtrl.theSelection.py - iFY;
+
                 }
 
-                //the rotate
-                if (cropCtrl.theSelection.bDrag[4]) {
-                    cropCtrl.theSelection.rotateCenter.isrotate=true;
-                    cropCtrl.theSelection.rotateCenter.angleRotate =  Math.atan2(iMouseY-cropCtrl.theSelection.rotateCenter.y, iMouseX-cropCtrl.theSelection.rotateCenter.x);
-                }
-
-
-
-
-                if (iFW >  cropCtrl.theSelection.csizeh * 2 && iFH >  cropCtrl.theSelection.csizeh * 2) {
+                if (iFW > cropCtrl.theSelection.csizeh * 2 && iFH > cropCtrl.theSelection.csizeh * 2) {
                     cropCtrl.theSelection.w = iFW;
                     cropCtrl.theSelection.h = iFH;
                     cropCtrl.theSelection.x = iFX;
                     cropCtrl.theSelection.y = iFY;
+
                 }
                 //console.log(iMouseX+"  my "+iMouseY+"   x "+ cropCtrl.theSelection.x+" y "+ cropCtrl.theSelection.y);
+
                 cropCtrl.drawScene();
 
             };
@@ -799,8 +822,8 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                         iMouseY = Math.floor(e.pageY -myPos.top);
 
                     }
-              	
-                  	}
+                
+                    }
                 
                 cropCtrl.theSelection.px = iMouseX -   cropCtrl.theSelection.x;
                 cropCtrl.theSelection.py = iMouseY -   cropCtrl.theSelection.y;
