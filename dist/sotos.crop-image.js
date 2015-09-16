@@ -350,8 +350,27 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                 srcCanvasCtx.restore();
                 //if crop tool show after crop the value is false
               if( $scope.cropOptions.viewShowCropTool){
+                 //Limiting crop Object inside image
+                	
+                	//Top -Left
+                	if(theSelection.x<0){
+                	 theSelection.x=0;            		  
+                	}
+				  
+                	if(theSelection.y<0){
+                		theSelection.y=0;            		  
+                	}
+                	//Right - Bottom
+                	if(theSelection.x+theSelection.w>editCanvasCtx.canvas.width){
+                		theSelection.x = editCanvasCtx.canvas.width-theSelection.w;
+                	}
+				  
+                	if(theSelection.y+theSelection.h>editCanvasCtx.canvas.height){
+                		theSelection.y = editCanvasCtx.canvas.height-theSelection.h;
+                	}
+                	//End
                  theSelection.draw();
-                  theSelection.drawRotate();
+                 theSelection.drawRotate();
                 }else{
 
                  if($scope.cropOptions.watermarkType==='image'){
