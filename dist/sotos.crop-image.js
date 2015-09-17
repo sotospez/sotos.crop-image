@@ -1,6 +1,6 @@
 /*! 
  Name        : sotos.crop-image 
- Version     : 0.0.5 
+ Version     : 0.0.6 
  Author      :  - 
  Date        : 17-09-2015 
  Description : crop images, put watermark and save directive in angular  
@@ -42,16 +42,26 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             //no use radio btn create into canvas
             $scope.cropOptions.viewShowFixedBtn=false;
             //if rotate tool show
-            $scope.cropOptions.viewShowRotateBtn= $scope.cropOptions.viewShowRotateBtn||true;
+            if (typeof $scope.cropOptions.viewShowRotateBtn == "undefined") {
+                 $scope.cropOptions.viewShowRotateBtn = true;
+            }
             //output size of image
             $scope.cropOptions.outputImageWidth= $scope.cropOptions.outputImageWidth||0;
             $scope.cropOptions.outputImageHeight= $scope.cropOptions.outputImageHeight||0;
-            $scope.cropOptions.outputImageRatioFixed= $scope.cropOptions.outputImageRatioFixed||true;
+            if (typeof $scope.cropOptions.outputImageRatioFixed == "undefined") {
+                 $scope.cropOptions.outputImageRatioFixed = true;
+             }
+
             $scope.cropOptions.outputImageType= $scope.cropOptions.outputImageType||"jpeg";
             //if this check the image crop by the original size off image and no resize
-            $scope.cropOptions.outputImageSelfSizeCrop= $scope.cropOptions.outputImageSelfSizeCrop||true;
+            if (typeof $scope.cropOptions.outputImageSelfSizeCrop == "undefined") {
+                $scope.cropOptions.outputImageSelfSizeCrop  = true;
+            }
+
             //show the crop tool use only for crop and crop again one image
-            $scope.cropOptions.viewShowCropTool= $scope.cropOptions.viewShowCropTool||true;
+            if (typeof $scope.cropOptions.viewShowCropTool == "undefined") {
+                $scope.cropOptions.viewShowCropTool = true;
+            }
 
             //this is the watermark if is set the watermark tool
             //show after crop
