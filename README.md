@@ -25,6 +25,9 @@ Limiting crop object inside area. by zaidchauhan
 fix image crossOrigin
 src folder
 
+###v0.0.6
+Fixes logic for default options. by Nick Darvey
+
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
 
