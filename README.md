@@ -18,8 +18,12 @@ with Option Parameter inModal
 
 ###v0.0.4
 fix save (add function ) 
-
 fix touch
+
+###v0.0.5
+Limiting crop object inside area. by zaidchauhan
+fix image crossOrigin
+src folder
 
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
