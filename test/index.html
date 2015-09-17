@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <title>sotos.image-crop demo</title>
+    <meta charset="utf-8">
+    <meta name="author" content="sotos.gr">
+    <meta name="viewport" content="width=device-width, initial-scale=1 minimum-scale=1 maximum-scale=1">
+    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.js"></script>
+    <script src="../dist/sotos.crop-image.min.js"></script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+</head>
+<body  ng-class="{'modal-open':modalOpen}">
+
+<div class="container" >
+<div class="lead">
+    <h1>sotos.image-crop module for angular </h1>
+    <p>Demo crop images, put watermark and save </p>
+    <a href="js/sotos.crop-image.min.js" class="btn btn-info btn-lg pull-right" target="_blank">Download</a>
+    <a href="https://github.com/sotospez/sotos.crop-image" class="btn btn-success btn-lg pull-right" target="_blank">GitHub</a>
+</div>
+<hr>
+<div class="">
+    <h3>Directive for crop images in angular </h3>
+    <p>html</p>
+
+    <!--<?prettify linenums=0?>-->
+    <?prettify?>
+        <pre class="prettyprint linenums">
+                &lt;html lang="en"&gt;
+                &lt;body&gt;
+                &lt;image-crop image-out="imageOut"  crop-options="options" ng-transclude &gt;
+                &lt;edit-crop&gt;&lt;/edit-crop&gt;
+                &lt;view-crop&gt;&lt;/view-crop&gt;
+                &lt;/image-crop&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+             </pre>
+
+    <p>Settings </p>
+    <!--<?prettify linenums=0?>-->
+    <?prettify?>
+        <pre class="prettyprint linenums ">
+
+         //set the module
+         var app = angular.module('app',['sotos.crop-image']);
+
+         app.controller('cropFullCtrl',['$scope',function($scope){
+            //the image to output
+            $scope.imageOut='';
+
+            //make the options settings
+
+            $scope.options={};                      // required
+            $scope.options.image="image.jpg";       // image for crop required
+            $scope.options.viewSizeWidth= 500;      // canvas size default 480
+            $scope.options.viewSizeHeight= 500;
+
+            $scope.cropOptions.viewShowRotateBtn= true;   //if rotate tool show default true
+
+            $scope.options.outputImageWidth= 0 ; //output size of image 0 take the size of source image
+            $scope.options.outputImageHeight= 0;
+            $scope.options.outputImageRatioFixed= true; //keep the ratio of source image
+            $scope.options.outputImageType= "jpeg"; //output image type
+            //if this check the image crop by the original size off image and no resize
+            $scope.options.outputImageSelfSizeCrop= true;
+
+            //show the crop tool use only for crop and crop again one image
+            $scope.options.viewShowCropTool= true;
+
+            //this is the watermark if is set the watermark tool
+            //show after crop
+            //watermark type = text or image
+            $scope.options.watermarkType='image';
+            //set the image
+            $scope.options.watermarkImage= null;
+            //set text if type is text
+            $scope.options.watermarkText= null;
+            //settings for the text canvas textfill
+            $scope.options.watermarkTextFillColor= 'rgba(0,0, 0, 0.8)'; //color of the letters
+            $scope.options.watermarkTextFont= 'Arial'; //font
+
+            //if window is modal
+            $scope.options.inModal=true;
+
+            // $broadcast functions
+
+            // cropImage : crop the image and data fill the imageOut with the image.
+            // reload the view with the crop image if watermark is set then watermark tool shows.
+
+             $scope.cropImage= function(){
+                $scope.$broadcast('cropImage');
+             };
+
+            // cropImageSave : send the image to the window.open() to save the image
+            $scope.saveImage= function(){
+                  $scope.$broadcast('cropImageSave');
+            };
+
+            // cropImageShow : after crop output the image with the watermark to the imageOut
+
+            $scope.cropImageShow= function(){
+                $scope.$broadcast('cropImageShow');
+            };
+         }]);
+             </pre>
+
+    <!-- Button trigger modal -->
+    <button class="btn btn-primary btn-lg" ng-click="modalOpen=!modalOpen">
+        Launch demo modal
+    </button>
+</div>
+<h2>Some demos</h2>
+<div class="panel panel-default" ng-controller="cropCtrl">
+
+    <div class="alert alert-info">
+        <h3>Image Crop with dbclick or button put watermark text after crop.</h3>
+    </div>
+    <div class="navbar navbar-default">
+        <form class="form-inline navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <label>Watermark Text</label>
+                <input type="text" class="form-control" placeholder="Watermark" ng-model="options.watermarkText"  value="Sotos">
+            </div>
+            <div class="form-group">
+                <label>Watermark Fill Color</label>
+                <input class="form-control" type="color" ng-model="options.watermarkTextFillColor">
+            </div>
+
+            <button class="btn btn-info" ng-click="showImage()">Show Image With Watermark</button>
+            <button class="btn btn-default" ng-click="cropImage()">Crop Image </button>
+            <div class="toolbar">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.outputImageRatioFixed">Fiexd Ratio
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.viewShowRotateBtn">Show Rotate btn
+                    </label>
+                </div>
+                <div class="checkbox" >
+                    <label>
+                        <input type="checkbox"   ng-model="options.outputImageSelfSizeCrop">Keep the Original size of image
+                    </label>
+                </div>
+                <div class="checkbox ">
+                    <label>
+                        <input type="checkbox"   ng-model="options.viewShowCropTool">Show Crop Tool
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="well" file-drop file="options.image">
+        <span>Drop Image Here to edit your image</span>
+    </div>
+    <image-crop image-out="imageOut" crop-options="options" ng-transclude  >
+        <edit-crop ></edit-crop>
+        <view-crop ></view-crop>
+    </image-crop>
+    <div class="row">
+        <div class="col-md-6">
+            <?prettify?>
+        <pre class="prettyprint linenums ">
+            app.controller('cropCtrl',['$scope',function($scope){
+            $scope.options={};
+            $scope.options.image="sotos.jpg";
+            $scope.options.watermarkType="text";
+            $scope.options.watermarkText="sotos";
+            $scope.options.outputImageType= "png";
+
+            $scope.cropImage= function(){
+            $scope.$broadcast('cropImage');
+            };
+
+             $scope.showImage= function(){
+             $scope.$broadcast('cropImageShow');
+             };
+
+            }]);
+    </pre>
+        </div>
+        <div class="col-md-6">
+            <div class="panel  panel-info">
+                <div class="panel-heading">  <h3 class="panel-title">Image Out</h3></div>
+                <div class="panel-body">
+                    <img ng-src="{{imageOut}}" class="img-responsive" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<div class="panel panel-default" ng-controller="cropImageCtrl">
+    <div class="alert alert-info">
+        <h3>Image Crop with dbclick or button put watermark image after crop.</h3>
+    </div>
+    <div class="navbar navbar-default" >
+        <form class="form-inline navbar-form navbar-left" role="search">
+            <button class="btn btn-info" ng-click="showImage()">Show Image With Watermark</button>
+            <button class="btn btn-default" ng-click="cropImage()">Crop Image </button>
+            <div class="toolbar">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.outputImageRatioFixed">Fiexd Ratio
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.viewShowRotateBtn">Show Rotate btn
+                    </label>
+                </div>
+                <div class="checkbox" >
+                    <label>
+                        <input type="checkbox"   ng-model="options.outputImageSelfSizeCrop">Keep the Original size of image
+                    </label>
+                </div>
+                <div class="checkbox ">
+                    <label>
+                        <input type="checkbox"   ng-model="options.viewShowCropTool">Show Crop Tool
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="well" file-drop file="options.image">
+        <span>Drop Image Here to edit your image</span>
+    </div>
+    <image-crop  image-out="imageOut" crop-options="options" ng-transclude >
+        <edit-crop ></edit-crop>
+        <view-crop ></view-crop>
+    </image-crop>
+    <div class="row">
+        <div class="col-md-6">
+            <?prettify?>
+        <pre class="prettyprint linenums ">
+        app.controller('cropCtrl',['$scope',function($scope){
+            $scope.options={};
+            $scope.options.image="image.jpg";
+            $scope.options.watermarkType="image";
+            $scope.options.watermarkImage="wimage.jpg";
+            $scope.options.viewSizeWidth=400;
+
+
+            $scope.showImage= function(){
+                 $scope.$broadcast('cropImageShow');
+            };
+            $scope.cropImage= function(){
+                $scope.$broadcast('cropImage');
+            };
+        }]);
+ </pre>
+        </div>
+        <div class="col-md-6">
+            <div class="panel  panel-info">
+                <div class="panel-heading">  <h3 class="panel-title">Image Out</h3></div>
+                <div class="panel-body">
+                    <img ng-src="{{imageOut}}" class="img-responsive" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<div  class="panel panel-default"ng-controller="cropFullCtrl">
+    <div class="alert alert-info">
+        <h3>full test</h3>
+    </div>
+    <div class="well" >
+        <form class="form form-inline" role="search">
+            <div class="">
+                <button class="btn btn-info" ng-click="showImage()">Show Image With Watermark</button>
+                <button class="btn btn-default" ng-click="cropImage()">Crop Image </button>
+                <button class="btn btn-default" ng-click="saveImage()">Save Image </button>
+            </div>
+            <div style="padding: 15px;">
+                <div class="form-group">
+                    <label>Image source:</label>
+                    <select class="form-control"  ng-model="selectedImage" ng-options="c.name for c in images"></select>
+                </div>
+                <div class="form-group">
+                    <label>Watermark Image:</label>
+                    <select class="form-control"  ng-model="selectedImageWater" ng-options="c.name for c in imagesW"></select>
+                </div>
+                <div class="form-group">
+                    <label class="">Watermark Type:</label>
+                    <select class="form-control"  ng-model="selectedType" ng-options="d.name for d in type"></select>
+                </div>
+                <div class="form-group">
+                    <label class="">Watermark Font:</label>
+                    <select class="form-control"  ng-model="selectedFont" ng-options="d.name for d in font"></select>
+                </div>
+            </div>
+            <div style="padding: 10px;">
+                <div class="form-group">
+                    <label>Text:</label>
+                    <input class="form-control" type="text" ng-model="options.watermarkText">
+
+                </div>
+                <div class="form-group">
+                    <label>Watermark Fill Color</label>
+                    <input class="form-control" type="color" ng-model="options.watermarkTextFillColor">
+                </div>
+                <div class="form-group">
+                    <label>Width</label>
+                    <input class="form-control" type="number" ng-model="options.outputImageWidth">
+                </div>
+                <div class="form-group">
+                    <label>Height</label>
+                    <input class="form-control" type="number" ng-model="options.outputImageHeight">
+                </div>
+            </div>
+
+            <div class="">
+                <div class="checkbox-inline">
+                    <label>
+                        <input type="checkbox"  class="form-control"  ng-model="options.outputImageRatioFixed">Fiexd Ratio
+                    </label>
+                </div>
+                <div class="checkbox-inline">
+                    <label>
+                        <input type="checkbox" class="form-control" ng-model="options.viewShowRotateBtn">Show Rotate btn
+                    </label>
+                </div>
+                <div class="checkbox-inline" >
+                    <label>
+                        <input type="checkbox"   class="form-control"  ng-model="options.outputImageSelfSizeCrop">Keep the Original size of image
+                    </label>
+                </div>
+                <div class="checkbox-inline">
+                    <label>
+                        <input type="checkbox" class="form-control"   ng-model="options.viewShowCropTool">Show Crop Tool
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="well col-md-6" file-drop file="options.image">
+            <span>Drop Image Here to edit your image</span>
+        </div>
+        <div class="well col-md-6" file-drop file="options.watermarkImage">
+            <span>Drop Watermark Image Here </span>
+        </div>
+    </div>
+    <image-crop  image-out="imageOut" crop-options="options" ng-transclude crop-image-save="saveCrop">
+        <edit-crop></edit-crop>
+        <view-crop></view-crop>
+    </image-crop>
+    <div class="row">
+        <div class="col-md-6">
+
+        <pre class="linenums ">
+       options: {{options|json}}
+
+ </pre>
+        </div>
+        <div class="col-md-6">
+            <div class="panel  panel-info">
+                <div class="panel-heading">  <h3 class="panel-title">Image Out</h3></div>
+                <div class="panel-body">
+                    <img ng-src="{{imageOut}}" class="img-responsive" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+</div>
+
+
+<style>
+    .in{
+        display: block!important;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade" id="myModal" ng-class="{in:modalOpen}"  >
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ng-click="modalOpen=!modalOpen"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal Test</h4>
+            </div>
+            <div class="modal-body" ng-controller="cropCtrlModal">
+
+                <image-crop  image-out="imageOut" crop-options="options" ng-transclude>
+                    <edit-crop ></edit-crop>
+                    <view-crop ></view-crop>
+                </image-crop>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="modalOpen=!modalOpen">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+var app = angular.module('app',['sotos.crop-image']);
+
+
+angular.element(document).ready(function() {
+    angular.bootstrap(document, [ "app" ]);
+});
+
+app.controller('cropCtrl',['$scope',function($scope){
+    $scope.options={};
+    $scope.options.image="http://placekitten.com/850/600";
+    $scope.options.watermarkType="text";
+    $scope.options.watermarkText="sotos";
+    $scope.options.outputImageType= "png";
+    $scope.showImage= function(){
+        $scope.$broadcast('cropImageShow');
+
+    };
+    $scope.cropImage= function(){
+        $scope.$broadcast('cropImage');
+
+    };
+
+
+
+}]);
+
+app.controller('cropCtrlModal',['$scope',function($scope){
+    $scope.options={};
+    $scope.options.viewSizeWidth=400;
+
+    $scope.options.image="http://placekitten.com/850/600";
+    $scope.options.watermarkType="text";
+    $scope.options.watermarkText="sotos";
+    $scope.options.inModal=true;
+    $scope.showImage= function(){
+        $scope.$broadcast('cropImageShow');
+
+    };
+    $scope.cropImage= function(){
+        $scope.$broadcast('cropImage');
+
+    };
+    $scope.showCrop= function(){
+        //   $scope.$broadcast('cropImageShow');
+
+    };
+    $scope.saveCrop= function(){
+        // $scope.$broadcast('cropImage');
+
+    };
+
+}]);
+
+
+app.controller('cropImageCtrl',['$scope',function($scope){
+    $scope.showImage= function(){
+        $scope.$broadcast('cropImageShow');
+
+    };
+
+    $scope.cropImage= function(){
+        $scope.$broadcast('cropImage');
+
+    };
+
+    $scope.options={};
+    $scope.options.image="http://placekitten.com/850/600";
+    $scope.options.viewSizeWidth=400;
+    $scope.options.viewSizeHeight=400;
+    $scope.options.watermarkType="image";
+    $scope.options.watermarkImage="img/w2.png";
+    $scope.showCrop= function(){
+        //   $scope.$broadcast('cropImageShow');
+
+    };
+    $scope.saveCrop= function(){
+        // $scope.$broadcast('cropImage');
+
+    };
+
+}]);
+
+
+
+
+app.controller('cropFullCtrl',['$scope',function($scope){
+    $scope.showImage= function(){
+        $scope.$broadcast('cropImageShow');
+
+    };
+
+    $scope.cropImage= function(){
+        $scope.$broadcast('cropImage');
+
+    };
+    $scope.saveImage= function(){
+        $scope.$broadcast('cropImageSave');
+
+    };
+
+    $scope.saveCrop= function(image){
+
+        console.log(image);
+
+    };
+
+    $scope.images=[];
+
+
+    $scope.images.push({name:'img1',src:'http://placekitten.com/850/700'});
+    $scope.images.push({name:'img2',src:'http://placekitten.com/850/750'});
+    $scope.images.push({name:'img3',src:'http://placekitten.com/850/800'});
+
+    $scope.imagesW=[];
+    $scope.imagesW.push({name:'w2',src:'img/w2.png'});
+   
+
+    $scope.type=[];
+    $scope.type.push({name:'image',type:'image'});
+    $scope.type.push({name:'text',type:'text'});
+
+    $scope.font=[];
+    $scope.font.push({name:'Arial',font:'Arial'});
+    $scope.font.push({name:'Verdana',font:'Verdana'});
+    $scope.font.push({name:'Times New Roman',font:'Times New Roman'});
+    $scope.font.push({name:'Courier New',font:'Courier New'});
+    $scope.font.push({name:'serif',font:'serif'});
+    $scope.font.push({name:'sans-serif',font:'sans-serif'});
+
+
+    $scope.options={};
+
+    $scope.options.viewSizeWidth=400;
+    $scope.options.outputImageWidth=720;
+    $scope.options.outputImageHeight=720;
+    $scope.options.watermarkType="image";
+    $scope.options.watermarkText="sotos";
+
+    $scope.$watch('selectedType',function(){
+        $scope.options.watermarkType= $scope.selectedType.type;
+
+    });
+    $scope.$watch('selectedImage',function(){
+        $scope.options.image= $scope.selectedImage.src;
+
+    });
+
+    $scope.$watch('selectedImageWater',function(){
+        $scope.options.watermarkImage= $scope.selectedImageWater.src;
+
+    });
+
+
+    $scope.$watch('selectedFont',function(){
+        $scope.options.watermarkTextFont= $scope.selectedFont.font;
+
+    });
+
+    $scope.selectedImage = $scope.images[0];
+    $scope.options.image= $scope.selectedImage.src;
+    $scope.selectedImageWater = $scope.imagesW[0];
+    $scope.selectedType=  $scope.type[0];
+    $scope.options.watermarkType= $scope.selectedType.type;
+    $scope.selectedFont=  $scope.font[0];
+    $scope.options.watermarkTextFont= $scope.selectedFont.font;
+
+
+
+}]);
+
+
+app.directive('fileDrop', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            file: '='
+        },
+        link: function(scope, element, attrs) {
+            var DataTransfer = function(event) {
+
+                return  event.dataTransfer || event.originalEvent.dataTransfer;
+            };
+            var processDrag = function(event) {
+                if (event) {
+                    if (event.preventDefault) {
+                        event.preventDefault();
+                    }
+                    if (event.stopPropagation) {
+                        return false;
+                    }
+                }
+                DataTransfer(event).effectAllowed = 'copy';
+                return false;
+            };
+            element.bind('dragover', processDrag);
+            element.bind('dragenter', processDrag);
+            return element.bind('drop', function(event) {
+                var file;
+                if (event != null) {
+                    event.preventDefault();
+                }
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    scope.$apply(function() {
+                        return scope.file = evt.target.result;
+                    });
+                };
+                file =  DataTransfer(event).files[0];
+                reader.readAsDataURL(file);
+                return false;
+            });
+        }
+    }
+});
+</script>
+
+</body>
+</html>
