@@ -36,6 +36,10 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             if (typeof $scope.cropOptions.viewShowRotateBtn == "undefined") {
                  $scope.cropOptions.viewShowRotateBtn = true;
             }
+            //if rotate lock to 45
+            if (typeof $scope.cropOptions.rotateRadiansLock == "undefined") {
+                $scope.cropOptions.rotateRadiansLock  = true;
+            }
             //output size of image
             $scope.cropOptions.outputImageWidth= $scope.cropOptions.outputImageWidth||0;
             $scope.cropOptions.outputImageHeight= $scope.cropOptions.outputImageHeight||0;
@@ -103,6 +107,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                 this.rotateCenter = {};//rotate
                 this.rotateCenter.angle=0.005;  // angle rotation - +
                 this.rotateCenter.angleRotate=1;   // angle rotation static +1 -1
+                this.rotateCenter.rotateRadiansLock=$scope.cropOptions.rotateRadiansLock;   // angle rotation lock
                 this.rotateCenter.isrotate=false;  // if rotate click
                 this.rotateCenter.r=this.w > this.h ? this.w : this.h ;   //r radian of circle
                 this.rotateCenter.r =  this.rotateCenter.r/Math.PI;
@@ -239,6 +244,10 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
             SelectionCrop.prototype.drawRotate = function(){
 
                 if($scope.cropOptions.viewShowRotateBtn){
+                    //Issues #16
+                    // fix rotation step 45º
+                    // check if setting change
+                    this.rotateCenter.rotateRadiansLock=$scope.cropOptions.rotateRadiansLock;
 
                     this.rotateCenter.r=this.w > this.h ? this.w : this.h ;   //r radian of circle
                     this.rotateCenter.r =   Math.floor(this.rotateCenter.r/Math.PI);
@@ -256,7 +265,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [ function() {
                     editCanvasCtx.closePath();
 
                     editCanvasCtx.beginPath();
-                    editCanvasCtx.arc(this.rotateCenter.x,  this.rotateCenter.y, this.rotateCenter.r , 0, this.rotateCenter.angleRotate , false);
+                    editCanvasCtx.arc(this.rotateCenter.x,  this.rotateCenter.y, this.rotateCenter.r ,0, this.rotateCenter.angleRotate , false);
                     editCanvasCtx.lineWidth = 5;
                     editCanvasCtx.strokeStyle ='rgba(153, 205,0, 0.8)';
                     editCanvasCtx.stroke();

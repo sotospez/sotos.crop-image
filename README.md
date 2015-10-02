@@ -28,6 +28,10 @@ src folder
 ###v0.0.6
 Fixes logic for default options. by Nick Darvey
 
+
+###v0.0.7
+Fixes Issues #16 lock rotation 45º step
+
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
 
@@ -77,7 +81,8 @@ in controller required
             $scope.options.viewSizeHeight= 500;
  
             $scope.options.viewShowRotateBtn= true;   //if rotate tool show default true
- 
+            $scope.options.rotateRadiansLock= true;  // lock radians default true
+
             $scope.options.outputImageWidth= 0 ; //output size of image 0 take the size of source image
             $scope.options.outputImageHeight= 0;
             $scope.options.outputImageRatioFixed= true; //keep the ratio of source image

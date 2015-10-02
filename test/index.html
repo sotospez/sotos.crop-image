@@ -151,6 +151,11 @@
                         <input type="checkbox"   ng-model="options.viewShowCropTool">Show Crop Tool
                     </label>
                 </div>
+                <div class="checkbox ">
+                    <label>
+                        <input type="checkbox"   ng-model="options.rotateRadiansLock">Radians Lock
+                    </label>
+                </div>
             </div>
         </form>
     </div>
@@ -430,6 +435,7 @@ app.controller('cropCtrl',['$scope',function($scope){
     $scope.options.watermarkType="text";
     $scope.options.watermarkText="sotos";
     $scope.options.outputImageType= "png";
+    $scope.options.rotateRadiansLock=false;
     $scope.showImage= function(){
         $scope.$broadcast('cropImageShow');
 

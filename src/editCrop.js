@@ -188,7 +188,58 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
                 //the rotate
                 if (cropCtrl.theSelection.bDrag[4]) {
                     cropCtrl.theSelection.rotateCenter.isrotate=true;
-                    cropCtrl.theSelection.rotateCenter.angleRotate =  Math.atan2(iMouseY-cropCtrl.theSelection.rotateCenter.y, iMouseX-cropCtrl.theSelection.rotateCenter.x);
+
+                    //Issues #16
+                    // fix rotation step 45º
+                    var rotate = Math.atan2(iMouseY-cropCtrl.theSelection.rotateCenter.y, iMouseX-cropCtrl.theSelection.rotateCenter.x);
+
+                    //if set true
+                    if(cropCtrl.theSelection.rotateCenter.rotateRadiansLock){
+                    var myPi = Math.PI/180;
+
+                    //from 0º - 20º = 0º
+                    //    20º - 45º = 45º
+                    //    45º - 90º = 90º
+                    //    90º - 135º = 135º
+                    //    135º - 180º = 180º
+                    if(rotate>0 &&  rotate< 20 * myPi){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=0;
+                    }
+                    if(rotate> 20 * myPi &&  rotate< 45 * myPi){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*45;
+                    }
+                    if(rotate> 45 * myPi &&  rotate< 90 * myPi){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*90;
+                    }
+                    if(rotate> 90 * myPi &&  rotate< 135 * myPi){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*135;
+                    }
+                    if(rotate> 135 * myPi &&  rotate< 180 * myPi){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*180;
+                    }
+
+                     //negative radians check
+                    if(rotate<0 &&  rotate> 20 * myPi*-1){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=0;
+                    }
+                    if(rotate< 20 * myPi*-1 &&  rotate> 45 * myPi*-1){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*45*-1;
+                    }
+                    if(rotate< 45 * myPi*-1 &&  rotate> 90 * myPi*-1){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*90*-1;
+                    }
+                    if(rotate< 90 * myPi*-1 &&  rotate> 135 * myPi*-1){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*135*-1;
+                    }
+                    if(rotate< 135 * myPi*-1 &&  rotate> 180 * myPi*-1){
+                        cropCtrl.theSelection.rotateCenter.angleRotate=myPi*180*-1;
+                    }
+                    }else{
+                    cropCtrl.theSelection.rotateCenter.angleRotate=rotate;
+
+
+                    }
+
                 }
 
 
