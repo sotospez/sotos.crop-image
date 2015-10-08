@@ -1,14 +1,16 @@
 /*! 
  Name        : sotos.crop-image 
- Version     : 0.0.7 
+ Version     : 0.0.8 
  Author      :  - 
- Date        : 02-10-2015 
+ Date        : 08-10-2015 
  Description : crop images, put watermark and save directive in angular  
  Homepage    : https://github.com/sotospez/sotos.crop-image#readme 
  Demopage    : http://sotos.gr/demos/crop-image/ 
  */
 angular.module('sotos.crop-image', []);
-angular.module('sotos.crop-image').directive('imageCrop', [function () {
+angular.module('sotos.crop-image').directive('imageCrop', [
+  '$window',
+  function ($window) {
     return {
       restrict: 'E',
       transclude: true,
@@ -34,8 +36,11 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           var imageType;
           //size to view the canvas
           $scope.cropOptions = $scope.cropOptions || {};
-          $scope.cropOptions.viewSizeWidth = $scope.cropOptions.viewSizeWidth || 480;
-          $scope.cropOptions.viewSizeHeight = $scope.cropOptions.viewSizeHeight || 360;
+          this.cropOptions = $scope.cropOptions;
+          $scope.cropOptions.viewSizeWidth = $scope.cropOptions.viewSizeWidth || '480';
+          $scope.cropOptions.viewSizeWidth = $scope.cropOptions.viewSizeWidth + '';
+          $scope.cropOptions.viewSizeHeight = $scope.cropOptions.viewSizeHeight || '360';
+          $scope.cropOptions.viewSizeHeight = $scope.cropOptions.viewSizeHeight + '';
           $scope.cropOptions.viewSizeFixed = $scope.cropOptions.viewSizeFixed || false;
           //no use radio btn create into canvas
           $scope.cropOptions.viewShowFixedBtn = false;
@@ -468,7 +473,8 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
           //                srcCanvasCtx.mozEnableImageSmoothing =
           //                    srcCanvasCtx.enableImageSmoothing = 4;
           //on image load
-          image.onload = function () {
+          // # 0.0.8 and resize window
+          var onLoadImage = function () {
             theSelection.rotateCenter.angleRotate = 0;
             //restore the rotation
             //if no size the size = image size
@@ -492,6 +498,27 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
             mainCanvas.height = editCanvas.height;
             self.drawScene();
           };
+          //on load image run function
+          image.onload = function () {
+            onLoadImage();
+          };
+          //set wPer hPer if   viewSize is % the save the %
+          var wPer = null;
+          var hPer = null;
+          //check
+          if ($scope.cropOptions.viewSizeWidth.substring($scope.cropOptions.viewSizeWidth.length - 1) === '%' || $scope.cropOptions.viewSizeHeight.substring($scope.cropOptions.viewSizeHeight.length - 1) === '%') {
+            var w = angular.element($window);
+            var getWindowDimensions = function () {
+              wPer = wPer || $scope.cropOptions.viewSizeWidth.substring(0, $scope.cropOptions.viewSizeWidth.length - 1);
+              hPer = hPer || $scope.cropOptions.viewSizeHeight.substring(0, $scope.cropOptions.viewSizeHeight.length - 1);
+              //console.log($window,hPer,wPer,$scope.cropOptions.viewSizeWidth,$scope.cropOptions.viewSizeHeight);
+              $scope.cropOptions.viewSizeWidth = Math.round($window.innerWidth * wPer / 100) + '';
+              $scope.cropOptions.viewSizeHeight = Math.round($window.innerHeight * hPer / 100) + '';
+              onLoadImage();
+            };
+            w.bind('resize', getWindowDimensions);
+            getWindowDimensions();
+          }
           this.theSelection = theSelection;
           var loadImage = function () {
             image.src = $scope.cropOptions.image;
@@ -509,7 +536,7 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
             if ($scope.cropOptions.watermarkImage) {
               watermarkImage.src = $scope.cropOptions.watermarkImage;
             } else {
-              watermarkImage.src = null;
+              watermarkImage.src = '';
               self.drawScene();
             }
           };
@@ -530,9 +557,12 @@ angular.module('sotos.crop-image').directive('imageCrop', [function () {
         }
       ]
     };
-  }]);
+  }
+]);
 ;
-angular.module('sotos.crop-image').directive('editCrop', [function () {
+angular.module('sotos.crop-image').directive('editCrop', [
+  '$window',
+  function ($window) {
     return {
       require: '^imageCrop',
       restrict: 'E',
@@ -807,11 +837,12 @@ angular.module('sotos.crop-image').directive('editCrop', [function () {
         element.bind('touchstart', touchDown);
         element.bind('touchmove', touchMove);
         element.bind('touchend', touchUp);
-        element.bind('dblclick', cropCtrl.getImage);
+        //element.bind('dblclick', cropCtrl.getImage);
         element.append(canvasEdit);
       }
     };
-  }]);
+  }
+]);
 ;
 angular.module('sotos.crop-image').directive('viewCrop', [function () {
     return {

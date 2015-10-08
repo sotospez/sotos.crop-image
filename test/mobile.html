@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <title>sotos.image-crop Mobile Demo</title>
+    <meta charset="utf-8">
+    <meta name="author" content="sotos.gr">
+    <meta name="viewport" content="width=device-width, initial-scale=1 minimum-scale=1 maximum-scale=1">
+    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.js"></script>
+    <script src="../dist/sotos.crop-image.min.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+</head>
+<body  ng-class="{'modal-open':modalOpen}" class="noselect">
+
+<div class="container" >
+<div class="lead">
+    <h1>sotos.image-crop module for angular </h1>
+    <p>Demo crop images, put watermark and save (mobile demo Responsive canvases) V0.0.8 </p>
+    <a href="js/sotos.crop-image.min.js" class="btn btn-info btn-lg pull-right" target="_blank">Download</a>
+    <a href="https://github.com/sotospez/sotos.crop-image" class="btn btn-success btn-lg pull-right" target="_blank">GitHub</a>
+</div>
+<hr>
+<h2>Mobile Demo Width Responsive canvases by % </h2>
+<div class="panel panel-default" ng-controller="cropCtrl">
+
+    <div class="alert alert-info">
+        <h3>Image Crop</h3>
+    </div>
+    <div class="navbar navbar-default">
+        <form class="form-inline navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <label>Watermark Text</label>
+                <input type="text" class="form-control" placeholder="Watermark" ng-model="options.watermarkText"  value="Sotos">
+            </div>
+            <div class="form-group">
+                <label>Watermark Fill Color</label>
+                <input class="form-control" type="color" ng-model="options.watermarkTextFillColor">
+            </div>
+
+            <button class="btn btn-info" ng-click="showImage()">Show Image With Watermark</button>
+            <button class="btn btn-default" ng-click="cropImage()">Crop Image </button>
+            <div class="toolbar">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.outputImageRatioFixed">Fiexd Ratio
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="options.viewShowRotateBtn">Show Rotate btn
+                    </label>
+                </div>
+                <div class="checkbox" >
+                    <label>
+                        <input type="checkbox"   ng-model="options.outputImageSelfSizeCrop">Keep the Original size of image
+                    </label>
+                </div>
+                <div class="checkbox ">
+                    <label>
+                        <input type="checkbox"   ng-model="options.viewShowCropTool">Show Crop Tool
+                    </label>
+                </div>
+                <div class="checkbox ">
+                    <label>
+                        <input type="checkbox"   ng-model="options.rotateRadiansLock">Radians Lock
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="well" >
+         <input type="file" file-drop file="options.image" >
+        <span>Drop Image Here to edit your image</span>
+    </div>
+    <div class="container">
+    <image-crop image-out="imageOut" crop-options="options" ng-transclude  >
+        <edit-crop ></edit-crop>
+        <view-crop ></view-crop>
+    </image-crop>
+        </div>
+    <div class="">
+            <div class="panel  panel-info">
+                <div class="panel-heading">  <h3 class="panel-title">Image Out</h3></div>
+                <div class="panel-body">
+                    <img ng-src="{{imageOut}}" class="img-responsive" />
+                </div>
+            </div>
+
+    </div>
+
+
+
+  </div>
+</div>
+
+
+
+    <style>
+        .in{
+            display: block!important;
+        }
+        .noselect {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+    </style>
+
+
+
+    <script>
+var app = angular.module('app',['sotos.crop-image']);
+
+
+angular.element(document).ready(function() {
+    angular.bootstrap(document, [ "app" ]);
+});
+
+app.controller('cropCtrl',['$scope',function($scope){
+  //  $scope.imageOut='';
+    $scope.options={};
+    $scope.options.viewSizeWidth= '65%';
+    $scope.options.viewSizeHeight= '65%';
+    $scope.options.image="http://placekitten.com/850/400";
+  //  $scope.options.watermarkType="text";
+ //   $scope.options.watermarkText="sotos";
+    $scope.options.outputImageType= "png";
+    $scope.options.rotateRadiansLock=false;
+    $scope.showImage= function(){
+        $scope.$broadcast('cropImageShow');
+
+    };
+    $scope.cropImage= function(){
+        $scope.$broadcast('cropImage');
+
+    };
+
+
+
+}]);
+
+
+app.directive('fileDrop', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            file: '='
+        },
+        link: function(scope, element, attrs) {
+            var DataTransfer = function(event) {
+
+                return  event.dataTransfer || event.originalEvent.dataTransfer;
+            };
+            var processDrag = function(event) {
+                if (event) {
+                    if (event.preventDefault) {
+                        event.preventDefault();
+                    }
+                    if (event.stopPropagation) {
+                        return false;
+                    }
+                }
+                DataTransfer(event).effectAllowed = 'copy';
+                return false;
+            };
+            element.bind('dragover', processDrag);
+            element.bind('dragenter', processDrag);
+
+            var readFileChange =   function(event) {
+                var file;
+                if (event != null) {
+                    event.preventDefault();
+                }
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    scope.$apply(function() {
+                        scope.file = evt.target.result;
+                    });
+                };
+               // file =  DataTransfer(event).files[0];
+                reader.readAsDataURL( event.target.files[0]);
+            } ;
+
+            var readFileDrop =   function(event) {
+                var file;
+                if (event != null) {
+                    event.preventDefault();
+                }
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    scope.$apply(function() {
+                        scope.file = evt.target.result;
+                    });
+                };
+                 file =  DataTransfer(event).files[0];
+                reader.readAsDataURL( file);
+            } ;
+
+
+            element.bind("change",readFileChange);
+            //return
+            element.bind('drop',readFileDrop);
+        }
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,11 +1,13 @@
 
-angular.module('sotos.crop-image').directive('editCrop', [function() {
+angular.module('sotos.crop-image').directive('editCrop', ['$window',function($window) {
     return {
         require: '^imageCrop',
         restrict: 'E',
         scope: false,
         link: function(scope, element, attrs, cropCtrl)
         {
+
+
 
 
 
@@ -363,7 +365,7 @@ angular.module('sotos.crop-image').directive('editCrop', [function() {
 
 
 
-            element.bind('dblclick', cropCtrl.getImage);
+            //element.bind('dblclick', cropCtrl.getImage);
             element.append(canvasEdit);
 
         }

@@ -4,33 +4,36 @@ directive in angular
 
 crop images, put watermark and save directive in angular 
 
-###v0.0.1
-
-###v0.0.2
+###v0.0.1 - v0.0.6
 
 fix firefox
 
 fix rotate
 
-###v0.0.3
-fix modal 
-with Option Parameter inModal
+fix modal with Option Parameter inModal
 
-###v0.0.4
-fix save (add function ) 
+fix save (add function )
+
 fix touch
 
-###v0.0.5
 Limiting crop object inside area. by zaidchauhan
+
 fix image crossOrigin
+
 src folder
 
-###v0.0.6
 Fixes logic for default options. by Nick Darvey
-
 
 ###v0.0.7
 Fixes Issues #16 lock rotation 45º step
+
+###v0.0.8
+Fixes Issues #3 Responsive canvases
+
+Fixes Issues #13 404 in console watermark
+
+Fixes Issues #17 Remove Double clicking the editable
+
 
 [Demos http://sotos.gr/demos/crop-image/ ](http://sotos.gr/demos/crop-image/)
 
@@ -77,7 +80,7 @@ in controller required
  
             $scope.options={};                      // required
             $scope.options.image="image.jpg";       // image for crop required
-            $scope.options.viewSizeWidth= 500;      // canvas size default 480
+            $scope.options.viewSizeWidth= 500;      // canvas size default 480 or 30% 50% 80%...
             $scope.options.viewSizeHeight= 500;
  
             $scope.options.viewShowRotateBtn= true;   //if rotate tool show default true
